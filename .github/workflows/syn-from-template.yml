@@ -1,22 +1,27 @@
 name: Sync from template
 on:
-    # cronjob trigger
-  schedule:
-  - cron:  "0 0 1 * *"
+  # cronjob trigger
+  # schedule:
+  #   - cron: "0 0 1 * *"
   # manual trigger
   workflow_dispatch:
 jobs:
   repo-sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: read
     steps:
       # To use this repository's private action, you must check out the repository
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: actions-template-sync
-        uses: AndreasAugustin/actions-template-sync@v1.0.0-draft
+        uses: AndreasAugustin/actions-template-sync@v2
         with:
           github_token: ${{ secrets.WORKFLOW_TOKEN }}
           source_repo_path: alshedivat/al-folio
-          upstream_branch: master
+          is_force_push_pr: true
+          is_pr_cleanup: true
